@@ -949,7 +949,7 @@ where $M = \sup_\theta \|\nabla^2 G(\theta)\|$ (bounded by Lipschitz continuity)
 
 **Lemma 5.1 (Feasibility):** At the equilibrium $\theta^*$ where $\nabla_\theta G(\theta^*) = 0$, constraints $C_i(\theta^*) \geq 0$ are satisfied.
 
-*Proof:* The augmented Lagrangian penalty term $-\sum_j a_j \Delta_j^2$ is active in $\nabla_\theta G$. If any constraint were violated (i.e., $C_i(\theta^*) < 0$), then $\Delta_i = 1 - C_i(\theta^*) > 1$, yielding a negative contribution to the gradient. But we've shown $\nabla_\theta G(\theta^*) = 0$ at equilibrium, so this term must vanish, implying $\Delta_j = 0$ for all $j$, i.e., $C_i(\theta^*) \geq 0$. ∎
+*Proof:* The augmented Lagrangian penalty term $-\sum_j a_j \Delta_j^2$ is active in $\nabla_\theta G$. If any constraint were violated (i.e., $C_i(\theta^{\ast}) < 0$), then $\Delta_i = 1 - C_i(\theta^{\ast}) > 1$, yielding a negative contribution to the gradient. But we've shown $\nabla_\theta G(\theta^{\ast}) = 0$ at equilibrium, so this term must vanish, implying $\Delta_j = 0$ for all $j$, i.e., $C_i(\theta^{\ast}) \geq 0$. ∎
 
 ---
 
