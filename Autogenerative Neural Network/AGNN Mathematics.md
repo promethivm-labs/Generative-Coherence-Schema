@@ -431,13 +431,13 @@ where $I_{ij} \in [0,1]$ are symbolic constraint satisfactions.
 
 ### C.4 Gradient Computation
 
-$$\nabla_\theta C_i = \frac{\partial C_i}{\partial P_{\text{neural}}} \cdot \nabla_\theta P_{\text{neural}}$$
+$$ \nabla_\theta C_i = \frac{\partial C_i}{\partial P_{\text{neural}}} \cdot \nabla_\theta P_{\text{neural}} $$
 
 where:
-$$\frac{\partial C_i}{\partial P_{\text{neural}}} = \begin{cases} 1 & \text{if } P_{\text{neural}} + \sum_j I_{ij} \geq |J| \\ 0 & \text{otherwise} \end{cases}$$
+$$ \frac{\partial C_i}{\partial P_{\text{neural}}} = \begin{cases} 1 & \text{if } P_{\text{neural}} + \sum_j I_{ij} \geq |J| \\ 0 & \text{otherwise} \end{cases} $$
 
 and:
-$$\nabla_\theta P_{\text{neural}} = \sigma'(f_\theta(x)) \cdot \nabla_\theta f_\theta(x)$$
+$$ \nabla_\theta P_{\text{neural}} = \sigma'(f_\theta(x)) \cdot \nabla_\theta f_\theta(x) $$
 
 ---
 
