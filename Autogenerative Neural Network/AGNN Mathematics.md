@@ -36,7 +36,7 @@ Traditional neural networks (e.g., feedforward, convolutional, or recurrent NNs)
 
 - **Architecture and Dynamics**:
     - **Traditional NN**: Purely neural, focusing on pattern recognition and prediction in a data-driven manner. Dynamics are typically feedforward or recurrent without symbolic integration.
-    - **CFPE GNN**: Neurosymbolic with three coupled fields: Neural Field ($F_n$) for representations, Symbolic Field ($F_s$) for enforcing CFPE invariants, and Generative Field ($F_g$) for computing $\mathcal{G}$ and updating the others. Coupling equations (e.g., $\frac{dF_n}{dt} = \alpha \nabla_\theta \mathcal{G} + \beta \text{(CFPE\_feedback)}$) integrate neural learning with symbolic constraints and generative feedback.
+    - **CFPE GNN**: Neurosymbolic with three coupled fields: Neural Field ($F_n$) for representations, Symbolic Field ($F_s$) for enforcing CFPE invariants, and Generative Field ($F_g$) for computing $\mathcal{G}$ and updating the others. Coupling equations (e.g., $\frac{dF_n}{dt} = \alpha \nabla_\theta \mathcal{G} + \beta \text{(CFPE feedback)}$) integrate neural learning with symbolic constraints and generative feedback.
 
 - **Stability and Equilibrium**:
     - **Traditional NN**: Aims for convergence to a minimum loss, often leading to overfitting or stagnation in a static landscape.
@@ -192,8 +192,8 @@ The differential form $\frac{d(\text{XGI})}{dt} = \frac{1}{N}\sum_i w_i \frac{ds
 
 The three fields evolve under coupled differential equations:
 
-- **Neural Field** ($F_n$): Learns distributed representations via the term $\alpha \nabla_\theta \mathcal{G}$, while symbolic feedback $\beta \text{(CFPE\_feedback)}$ constrains learned features to respect invariants.
-- **Symbolic Field** ($F_s$): Continuously validates the neural representations ($\gamma \text{ validate}(F_n)$) and revises the rule set when contradictions are detected ($\delta \text{ revise\_rules}(F_s, \Delta)$).
+- **Neural Field** ($F_n$): Learns distributed representations via the term $\alpha \nabla_\theta \mathcal{G}$, while symbolic feedback $\beta \text{(CFPE feedback)}$ constrains learned features to respect invariants.
+- **Symbolic Field** ($F_s$): Continuously validates the neural representations ($\gamma \text{ validate}(F_n)$) and revises the rule set when contradictions are detected ($\delta \text{ revise rules}(F_s, \Delta)$).
 - **Generative Field** ($F_g$): Computes $\mathcal{G}$ and meta-gradients, acting as a coordinator that synchronizes neural learning and symbolic enforcement.
 
 The coupling coefficients $\alpha, \beta, \gamma, \delta, \varepsilon$ control the relative influence of each mechanism, effectively tuning the balance between neural adaptivity and symbolic rigidity.
@@ -536,7 +536,7 @@ where $\xi_i > 0$ are penalty weights.
 
 ### F.2 Symbolic Field Evolution
 
-$$\frac{dF_s}{dt} = \gamma \cdot \text{validate}(F_n, F_s) + \delta \cdot \text{revise\_rules}(F_s, \Delta_t) + \varepsilon \cdot \nabla_{F_s} \mathcal{G}(F_n, F_s, F_g)$$
+$$\frac{dF_s}{dt} = \gamma \cdot \text{validate}(F_n, F_s) + \delta \cdot \text{revise rules}(F_s, \Delta_t) + \varepsilon \cdot \nabla_{F_s} \mathcal{G}(F_n, F_s, F_g)$$
 
 **Validation Function**:
 $$\text{validate}(F_n, F_s) = \sum_i w_i \cdot [C_i(F_n) - \tau_i] \cdot e_i$$
@@ -545,7 +545,7 @@ where:
 - $e_i$: Unit vector in direction of invariant $i$'s symbolic representation
 
 **Rule Revision Function**:
-$$\text{revise\_rules}(F_s, \Delta_t) = \Omega_0(\Delta_t, \mathcal{R}_t, \theta_t) \text{ [projected onto } F_s \text{ space]}$$
+$$\text{revise rules}(F_s, \Delta_t) = \Omega_0(\Delta_t, \mathcal{R}_t, \theta_t) \text{ [projected onto } F_s \text{ space]}$$
 
 ### F.3 Generative Field Evolution
 
@@ -606,7 +606,7 @@ where:
 
 ### G.5 Iteration 0: Initialization
 
-$$\theta_0 = \text{random\_init}()$$
+$$\theta_0 = \text{random init}()$$
 $$x_0 = [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5] \text{ (maximum entropy)}$$
 
 $$C_1(\theta_0) = 0.1 \text{ (high contradiction due to } p \approx 0.5\text{)}$$
