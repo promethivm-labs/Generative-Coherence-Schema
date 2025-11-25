@@ -305,8 +305,8 @@ $$\varphi_2(\mathcal{G}_t) = -\mu_2 \cdot \left(\frac{\partial^2 \mathcal{G}_t}{
 Adjusts dissipation penalty weights $a_j$ based on contradiction patterns.
 
 #### Type 3: Expansion Potential Modulation
-$$\varphi_3(\mathcal{G}_t) = \mu_3 \cdot \log(n_{\text{new}}(\Delta_t) + 1)$$
-where $n_{\text{new}}(\Delta_t)$ counts new coherent configurations made accessible by resolving $\Delta_t$.
+$$ \varphi_3(\mathcal{G}_t) = \mu_3 \cdot \log(n_{\text{new}}(\Delta_t) + 1) $$
+where $ n_{\text{new}}(\Delta_t)$ counts new coherent configurations made accessible by resolving $\Delta_t $
 
 ### A.5 Complete Meta-Update Law
 
