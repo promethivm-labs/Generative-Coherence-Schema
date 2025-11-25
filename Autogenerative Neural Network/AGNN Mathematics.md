@@ -28,23 +28,29 @@ Traditional neural networks (e.g., feedforward, convolutional, or recurrent NNs)
 
 - **Optimization Objective**:
     - **Traditional NN**: Minimizes a fixed loss function, e.g., $\min_\theta L(\theta)$, where $L$ is a static error metric (e.g., cross-entropy). Updates use gradient descent: $\theta_{t+1} = \theta_t - \eta \nabla_\theta L$.
+        - *Explanation*: $\theta$ represents the neural network parameters (weights and biases), $\eta$ is the learning rate (step size), and $\nabla_\theta L$ is the gradient (direction of steepest increase in loss). The minus sign makes the network move *downhill* toward lower loss.
     - **CFPE GNN**: Maximizes the rate of generativity change, $\max \frac{d\mathcal{G}(\mathcal{S},t)}{dt}$, where $\mathcal{G}$ is a dynamic function encompassing coherence information, expansion potential, and dissipation correction. Updates use gradient ascent on $\mathcal{G}$: $\theta_{t+1} = \theta_t + \eta \nabla_\theta \mathcal{G}$. This promotes increasing capacity for coherent transformation instead of converging to a single point.
+        - *Explanation*: $\mathcal{G}(\mathcal{S},t)$ is the generativity function depending on system state $\mathcal{S}$ and time $t$. The objective is to maximize the *rate* at which generativity increases. The plus sign in the update rule makes the network move *uphill* toward higher generativity, actively expanding its coherent state space.
 
 - **Meta-Optimization and Self-Evolution**:
     - **Traditional NN**: The loss function and optimization rules are predefined and static; the network learns parameters but doesn't alter its own learning targets.
     - **CFPE GNN**: Employs meta-optimization where the objective itself evolves via the meta-update operator $\mathcal{M}$: $\mathcal{G}_{t+1} = \mathcal{G}_t + \mathcal{M}(\Delta_t, \Omega_0)$. It detects contradictions ($\Delta_t$), routes them through a metabolic operator ($\Omega_0$), and rewrites coherence criteria, enabling continuous adaptation and open-ended growth.
+        - *Explanation*: $\mathcal{G}_{t+1}$ is the generativity function at the next iteration, computed by adding a correction term $\mathcal{M}(\Delta_t, \Omega_0)$ to the current value $\mathcal{G}_t$. $\Delta_t$ is a vector measuring how much each invariant is violated, and $\Omega_0$ is the metabolic operator that decides how to modify the objective function. This allows the system to *rewrite its own goals* during training.
 
 - **Architecture and Dynamics**:
     - **Traditional NN**: Purely neural, focusing on pattern recognition and prediction in a data-driven manner. Dynamics are typically feedforward or recurrent without symbolic integration.
     - **CFPE GNN**: Neurosymbolic with three coupled fields: Neural Field ($F_n$) for representations, Symbolic Field ($F_s$) for enforcing CFPE invariants, and Generative Field ($F_g$) for computing $\mathcal{G}$ and updating the others. Coupling equations (e.g., $\frac{dF_n}{dt} = \alpha \nabla_\theta \mathcal{G} + \beta \text{(CFPE feedback)}$) integrate neural learning with symbolic constraints and generative feedback.
+        - *Explanation*: $\frac{dF_n}{dt}$ is the rate of change of the neural field over time. $\alpha \nabla_\theta \mathcal{G}$ is the generativity-driven learning component (scaled by coefficient $\alpha$), while $\beta \text{(CFPE feedback)}$ is the symbolic constraint enforcement (scaled by $\beta$). These two terms work together: the neural field learns patterns while respecting logical invariants.
 
 - **Stability and Equilibrium**:
     - **Traditional NN**: Aims for convergence to a minimum loss, often leading to overfitting or stagnation in a static landscape.
     - **CFPE GNN**: Seeks generative stability where $\frac{d\mathcal{G}}{dt} > 0$, balancing coherence entropy reduction, expansion of coherent states, and minimization of dissipative contradictions. It terminates when $\frac{d\mathcal{G}}{dt} \leq 0$, reaching a "generative equilibrium" rather than a loss minimum.
+        - *Explanation*: $\frac{d\mathcal{G}}{dt}$ is the rate at which generativity increases. As long as this rate is positive ($ > 0$), the system continues learning and expanding. When the rate becomes zero or negative ($\leq 0$), the system has reached a stable state where no further generative improvement is possible—this is equilibrium, but not a simple minimum.
 
 - **Thermodynamic Analogy and Purpose**:
     - **Traditional NN**: Analogous to equilibrium thermodynamics, reducing entropy toward a single solution.
     - **CFPE GNN**: Follows non-equilibrium thermodynamics ($\frac{d\mathcal{G}}{dt} \approx -\frac{dS_c}{dt} + \frac{dE_p}{dt} - \frac{dD_i}{dt}$), reorganizing entropy for open coherence. It's designed for meta-learning cycles that drive coherent transformation, not just prediction or classification.
+        - *Explanation*: This equation decomposes the generativity rate into three thermodynamic components: $-\frac{dS_c}{dt}$ (negative entropy change in coherent configurations—reducing randomness), $+\frac{dE_p}{dt}$ (expansion rate of possibility space—opening new states), and $-\frac{dD_i}{dt}$ (reduction in dissipation/waste). Together, these maintain openness while increasing order.
 
 In summary, while traditional NNs are data-fitting machines that descend to a fixed optimum, the CFPE GNN is an adaptive, self-rewriting system that ascends toward expanding generative coherence, integrating symbolic reasoning to avoid traditional pitfalls like static objectives or overfitting. This makes it suitable for complex, evolving environments where open-ended learning is key. 
 
@@ -156,18 +162,36 @@ The CFPE framework is not incremental improvement—it's a **paradigm shift** fr
 The Generativity Function $\mathcal{G}$ represents a non-equilibrium thermodynamic potential that measures the system's capacity to sustain coherent transformation. Unlike traditional loss functions (which are purely statistical), $\mathcal{G}$ integrates three physically motivated terms:
 
 - **Coherence Information** $(\sum_i p_i \log(C_i))$: Quantifies the Shannon-like entropy of coherent configurations, weighted by their probability. Higher values indicate that probable states are highly coherent.
+    - *Detailed Explanation*: $p_i$ is the probability of configuration $i$, and $C_i$ is its coherence score (ranging from 0 to 1). The sum $\sum_i p_i \log(C_i)$ computes an information-theoretic measure: if highly probable states ($p_i$ large) also have high coherence ($C_i$ near 1), then $\log(C_i)$ is close to 0 and the term is positive. If probable states have low coherence, $\log(C_i)$ becomes very negative, penalizing the generativity. This encourages the system to make its most likely states also its most coherent ones.
+
 - **Expansion Potential** $(\log(n(t)))$: Captures the logarithmic growth of reachable coherent configuration space, ensuring the system avoids collapse to a single attractor.
+    - *Detailed Explanation*: $n(t)$ counts the number of distinct coherent configurations accessible at time $t$. Taking the logarithm $\log(n(t))$ means that doubling the number of accessible states adds a constant amount to generativity. This logarithmic scaling ensures diminishing returns—going from 10 to 20 states is more valuable than from 1000 to 1010—which prevents the system from prioritizing quantity over quality.
+
 - **Dissipation Correction** $(-\sum_j a_j \Delta_j^2)$: Penalizes unresolved contradictions, where $\Delta_j$ measures structural inconsistency and $a_j$ its metabolic cost.
+    - *Detailed Explanation*: $\Delta_j$ is the violation magnitude of constraint $j$ (how far from satisfaction), and $a_j$ is its importance weight. Squaring $\Delta_j^2$ makes large violations disproportionately costly (quadratic penalty). The negative sign means this term *subtracts* from generativity, creating pressure to resolve contradictions. The sum $\sum_j a_j \Delta_j^2$ aggregates all constraint violations into a single dissipation cost.
 
 This formulation allows $\mathcal{G}$ to act as a Lyapunov-like function whose maximization drives open-ended learning rather than convergence to a fixed point.
 
 ### 2. Gradient Ascent Dynamics and Parameter Evolution
 
-The update law $\theta_{t+1} = \theta_t + \eta \nabla_\theta \mathcal{G}$ directly inverts the descent logic of stochastic gradient descent (SGD). The positive learning rate $\eta$ ensures parameters move along the direction of steepest generativity increase. Critically:
+The update law $\theta_{t+1} = \theta_t + \eta \nabla_\theta \mathcal{G}$ directly inverts the descent logic of stochastic gradient descent (SGD). The positive learning rate $\eta$ ensures parameters move along the direction of steepest generativity increase.
+
+**Formula Breakdown:**
+- $\theta_t$: Current neural network parameters (weights, biases) at iteration $t$
+- $\eta$: Learning rate (step size), typically 0.001-0.1
+- $\nabla_\theta \mathcal{G}$: Gradient of generativity with respect to parameters (direction of steepest increase)
+- $\theta_{t+1}$: Updated parameters for next iteration
+- The *plus* sign (+) creates ascent (moving uphill toward higher generativity), contrasting with gradient *descent* which uses minus (-) to move downhill toward lower loss
+
+Critically:
 
 - The gradient $\nabla_\theta \mathcal{G}$ is computed with respect to neural parameters embedded in the coherence scores $C_i(\theta)$ and configuration counts $n(t;\theta)$.
+    - *Implementation Detail*: Computing $\nabla_\theta \mathcal{G}$ requires the chain rule through coherence functions: $\nabla_\theta \mathcal{G} = \sum_i \frac{p_i}{C_i} \nabla_\theta C_i + \frac{1}{n(t)} \nabla_\theta n(t) - 2\sum_j a_j \Delta_j \nabla_\theta \Delta_j$. Each term's gradient captures how parameter changes affect coherence, expansion, and dissipation respectively.
+    
 - Unlike SGD, which minimizes error on held-out data, this ascent rule maximizes internal coherence, potentially causing the network to expand its hypothesis space over time rather than regularize it.
+
 - Stability is monitored via $\frac{d\mathcal{G}}{dt}$; when this derivative becomes non-positive, the system has exhausted generative potential and enters a metastable equilibrium.
+    - *Practical Criterion*: In discrete time, approximate $\frac{d\mathcal{G}}{dt} \approx \frac{\mathcal{G}_{t+1} - \mathcal{G}_t}{\Delta t}$. Training continues while this difference is positive and terminates when it drops below a threshold (e.g., $10^{-4}$).
 
 ### 3. Meta-Update Operator and Objective Rewriting
 
@@ -185,8 +209,19 @@ The XGI measures satisfaction of the 79 CFPE invariants. Each invariant $i$ has:
 
 - An importance weight $w_i$ (reflecting its role in maintaining coherence)
 - A satisfaction state $s_i \in \{0, 1\}$ (binary or soft, typically computed as $\min(1, \max(0, C_i(\theta)))$)
+    - *Explanation*: $\min(1, \max(0, C_i(\theta)))$ clips the coherence score to the range [0,1]. If $C_i(\theta) < 0$, it becomes 0 (unsatisfied). If $C_i(\theta) > 1$, it becomes 1 (fully satisfied). Otherwise, it stays as-is (partial satisfaction).
 
-The differential form $\frac{d(\text{XGI})}{dt} = \frac{1}{N}\sum_i w_i \frac{ds_i}{dt}$ tracks how quickly the system transitions between invariant-satisfying and invariant-violating states. Positive rates indicate increasing global compliance; negative rates signal degradation requiring metabolic intervention.
+The differential form $\frac{d(\text{XGI})}{dt} = \frac{1}{N}\sum_i w_i \frac{ds_i}{dt}$ tracks how quickly the system transitions between invariant-satisfying and invariant-violating states.
+
+**Formula Breakdown:**
+- $N$: Total number of invariants (79 for CFPE)
+- $w_i$: Importance weight for invariant $i$ (normalized so $\sum_i w_i = N$)
+- $\frac{ds_i}{dt}$: Rate of change of satisfaction for invariant $i$
+- $\frac{1}{N}\sum_i$: Average across all invariants
+- $\frac{d(\text{XGI})}{dt}$: Overall rate of global coherence improvement
+
+Positive rates indicate increasing global compliance; negative rates signal degradation requiring metabolic intervention.
+    - *Interpretation*: If $\frac{d(\text{XGI})}{dt} > 0$, the system is becoming more coherent on average. If $< 0$, it's degrading and needs correction. If $\approx 0$, it's stable (either all satisfied or stuck).
 
 ### 5. Coupled Field Dynamics and Neurosymbolic Integration
 
@@ -200,11 +235,25 @@ The coupling coefficients $\alpha, \beta, \gamma, \delta, \varepsilon$ control t
 
 ### 6. Global Optimization and Policy Framework
 
-The objective $\max_\pi \mathbb{E}_\pi \left[ \int_0^T \frac{d\mathcal{G}(\mathcal{S}_t)}{dt} \, dt \right]$ integrates generativity rate over a planning horizon. The policy $\pi$ determines which actions or parameter updates to take at each step. This formulation:
+The objective $\max_\pi \mathbb{E}_\pi \left[ \int_0^T \frac{d\mathcal{G}(\mathcal{S}_t)}{dt} \, dt \right]$ integrates generativity rate over a planning horizon.
+
+**Formula Breakdown:**
+- $\pi$: Policy (decision rule for selecting actions or parameter updates at each step)
+- $\mathbb{E}_\pi[\cdot]$: Expected value under policy $\pi$ (accounting for stochastic dynamics)
+- $\int_0^T \cdot \, dt$: Integral from time 0 to horizon $T$ (sum of instantaneous rates over the entire trajectory)
+- $\frac{d\mathcal{G}(\mathcal{S}_t)}{dt}$: Generativity rate at time $t$ for system state $\mathcal{S}_t$
+- $\max_\pi$: Optimize over all possible policies to find the best one
+
+The policy $\pi$ determines which actions or parameter updates to take at each step. This formulation:
 
 - Treats the entire update sequence as a stochastic process under policy $\pi$.
+    - *Explanation*: Rather than greedily maximizing $\mathcal{G}$ at each step, this considers the *cumulative* generativity over a time window. This allows sacrificing immediate gains for better long-term outcomes.
+    
 - Replaces point-wise loss minimization with cumulative generativity maximization.
+    - *Contrast*: Traditional RL maximizes $\sum_t r_t$ (sum of rewards). CFPE maximizes $\int \frac{d\mathcal{G}}{dt} dt$ (integral of generativity rate), which is equivalent to maximizing the change in generativity: $\mathcal{G}(T) - \mathcal{G}(0)$.
+    
 - Naturally handles multi-step planning, where early parameter adjustments may sacrifice short-term $\mathcal{G}$ to unlock higher long-term rates.
+    - *Example*: The system might temporarily lower coherence ($\mathcal{G}$ drops) to explore new configuration space that enables much larger future gains.
 
 ### 7. Constraint Satisfaction and Feasible Optimization
 
@@ -219,14 +268,14 @@ The constrained problem $\max_\theta \mathcal{G} \text{ subject to } C_i(\mathca
 
 ## 12. Summary of Key Equations
 
-| Concept | Expression |
-|----------|-------------|
-| Generativity Function | $\mathcal{G} = \sum_i p_i \log(C_i) + \log(n(t)) - \sum_j a_j \Delta_j^2$ |
-| Gradient Ascent Update | $\theta_{t+1} = \theta_t + \eta \nabla_\theta \mathcal{G}$ |
-| Meta-Update Law | $\mathcal{G}_{t+1} = \mathcal{G}_t + \mathcal{M}(\Delta_t, \Omega_0)$ |
-| Generativity Rate | $\frac{d\mathcal{G}}{dt} = \frac{dI_c}{dt} + \frac{dE_p}{dt} - \frac{dD_i}{dt}$ |
-| Xenogenerative Index | $\text{XGI} = \frac{1}{N}\sum_{i=1}^N w_i s_i$ |
-| Global Objective | $\max_\pi \mathbb{E}\left[\int_0^T \frac{d\mathcal{G}}{dt} \, dt\right]$ |
+| Concept | Expression | Explanation |
+|----------|-------------|-------------|
+| Generativity Function | $\mathcal{G} = \sum_i p_i \log(C_i) + \log(n(t)) - \sum_j a_j \Delta_j^2$ | Combines coherence information (weighted entropy), expansion potential (log of state count), and dissipation penalty (squared violations). Higher $\mathcal{G}$ means more coherent, expansive, and contradiction-free states. |
+| Gradient Ascent Update | $\theta_{t+1} = \theta_t + \eta \nabla_\theta \mathcal{G}$ | Parameters move in direction of steepest generativity increase. $\eta$ controls step size, $\nabla_\theta \mathcal{G}$ points uphill. Plus sign (+) distinguishes this from gradient *descent*. |
+| Meta-Update Law | $\mathcal{G}_{t+1} = \mathcal{G}_t + \mathcal{M}(\Delta_t, \Omega_0)$ | Objective function itself evolves. $\mathcal{M}$ computes correction based on current contradictions $\Delta_t$ and metabolic operator $\Omega_0$. Enables self-modification of learning targets. |
+| Generativity Rate | $\frac{d\mathcal{G}}{dt} = \frac{dI_c}{dt} + \frac{dE_p}{dt} - \frac{dD_i}{dt}$ | Decomposes into three thermodynamic components: coherence information rate $\frac{dI_c}{dt}$, expansion rate $\frac{dE_p}{dt}$, dissipation rate $\frac{dD_i}{dt}$. System grows when positive. |
+| Xenogenerative Index | $\text{XGI} = \frac{1}{N}\sum_{i=1}^N w_i s_i$ | Average weighted satisfaction of all $N$ invariants. $w_i$ are importance weights, $s_i \in [0,1]$ are satisfaction levels. XGI=1 means perfect coherence, XGI=0 means complete violation. |
+| Global Objective | $\max_\pi \mathbb{E}\left[\int_0^T \frac{d\mathcal{G}}{dt} \, dt\right]$ | Maximize expected cumulative generativity rate over planning horizon $T$ under policy $\pi$. Integral sums instantaneous rates; expectation accounts for stochasticity. |
 
 ---
 
@@ -270,6 +319,11 @@ where:
 - **Input**: Contradiction vector $\Delta_t \in \mathbb{R}^n$, metabolic operator $\Omega_0$, current generativity $\mathcal{G}_t$
 - **Output**: Generativity modification $\delta\mathcal{G}_t$ (additive correction to $\mathcal{G}_t$)
 
+**Notation Explained:**
+- $\mathbb{R}^n$: Real-valued vector space with $n$ dimensions (one per tracked invariant)
+- $\mapsto$: Maps from (transforms input to output)
+- $\delta\mathcal{G}_t$: Change in generativity (delta symbol indicates a difference/modification)
+
 ### A.2 Canonical Form: Weighted Basis Expansion
 
 $$\mathcal{M}(\Delta_t, \Omega_0, \mathcal{G}_t) = \sum_{k=1}^K \lambda_k(\Delta_t) \cdot \varphi_k(\mathcal{G}_t)$$
@@ -278,6 +332,13 @@ where:
 - $\lambda_k(\Delta_t)$: **Metabolic response coefficients** (scalar weights)
 - $\varphi_k(\mathcal{G}_t)$: **Generativity modification functions** (basis transformations)
 - $K$: Number of meta-update modes (typically 3-7)
+
+**How to Read This Formula:**
+- $\sum_{k=1}^K$: Sum over all $K$ modification modes (k goes from 1 to K)
+- Each mode $k$ contributes a term: (response coefficient) × (modification function)
+- The response coefficient $\lambda_k(\Delta_t)$ detects whether contradiction pattern $k$ is present
+- The modification function $\varphi_k(\mathcal{G}_t)$ specifies *how* to modify generativity if pattern $k$ fires
+- Total modification is the sum of all active modes
 
 ### A.3 Metabolic Response Coefficients
 
@@ -292,6 +353,13 @@ where:
 
 **Physical Interpretation**: Each $\lambda_k$ acts as a "contradiction detector" that fires when a specific pattern appears in $\Delta_t$.
 
+**Formula Breakdown:**
+- $\langle w_k, \Delta_t \rangle = \sum_i w_{k,i} \Delta_{t,i}$: Inner product (dot product) projects contradiction vector onto direction $w_k$
+- $\langle w_k, \Delta_t \rangle - b_k$: Subtract threshold to create activation trigger (positive when pattern detected)
+- $\sigma(z) = \frac{1}{1+e^{-z}}$: Sigmoid function maps to [0,1], creating smooth transition from inactive (0) to active (1)
+- $\tau_k \cdot \sigma(\cdot)$: Scale by time constant to control how fast this mode responds
+- Result: $\lambda_k \approx 0$ when pattern absent, $\lambda_k \approx \tau_k$ when strongly present
+
 ### A.4 Generativity Modification Functions
 
 Three canonical modification types:
@@ -300,13 +368,32 @@ Three canonical modification types:
 $$\varphi_1(\mathcal{G}_t) = \mu_1 \cdot \log(1 + |\Delta_t|^2)$$
 Adds a new coherence measurement tracking the contradiction magnitude.
 
+**Explanation:**
+- $|\Delta_t|^2 = \sum_j \Delta_{t,j}^2$: Squared norm (total magnitude of all violations)
+- $\log(1 + |\Delta_t|^2)$: Logarithm ensures diminishing returns (large violations don't dominate)
+- $\mu_1$: Scaling factor controlling how much this term contributes
+- Effect: When contradictions arise, add a term to $\mathcal{G}$ that tracks their resolution
+
 #### Type 2: Dissipation Penalty Rescaling
 $$\varphi_2(\mathcal{G}_t) = -\mu_2 \cdot \left(\frac{\partial^2 \mathcal{G}_t}{\partial a^2} \cdot \Delta a\right)$$
 Adjusts dissipation penalty weights $a_j$ based on contradiction patterns.
 
+**Explanation:**
+- $\frac{\partial^2 \mathcal{G}_t}{\partial a^2}$: Second derivative (curvature) of generativity with respect to penalty weight $a$
+- $\Delta a$: Proposed change in penalty weight
+- Product: Estimates how much $\mathcal{G}$ will change if we adjust penalties
+- $-\mu_2$: Negative sign and scaling factor
+- Effect: Automatically tune penalty weights up/down based on which constraints are most binding
+
 #### Type 3: Expansion Potential Modulation
-$$ \varphi_3(\mathcal{G}_t) = \mu_3 \cdot \log(n_{\text{new}}(\Delta_t) + 1) $$
-where $ n_{\text{new}}(\Delta_t)$ counts new coherent configurations made accessible by resolving $\Delta_t $
+$$\varphi_3(\mathcal{G}_t) = \mu_3 \cdot \log(n_{\text{new}}(\Delta_t) + 1)$$
+where $n_{\text{new}}(\Delta_t)$ counts new coherent configurations made accessible by resolving $\Delta_t$.
+
+**Explanation:**
+- $n_{\text{new}}(\Delta_t)$: Number of additional coherent states that become reachable after fixing the contradictions
+- $\log(n_{\text{new}} + 1)$: Logarithm rewards expansion with diminishing returns; +1 prevents log(0)
+- $\mu_3$: Scaling factor
+- Effect: Incentivize resolving contradictions that unlock many new possibilities rather than dead-end fixes
 
 ### A.5 Complete Meta-Update Law
 
@@ -314,6 +401,13 @@ $$\mathcal{G}_{t+1} = \mathcal{G}_t + \eta_{\text{meta}} \cdot \mathcal{M}(\Delt
 $$= \mathcal{G}_t + \eta_{\text{meta}} \cdot \sum_k \tau_k \cdot \sigma(\langle w_k, \Delta_t \rangle - b_k) \cdot \varphi_k(\mathcal{G}_t)$$
 
 where $\eta_{\text{meta}}$ is the meta-learning rate (typically 0.001-0.01).
+
+**Complete Formula Explanation:**
+- First line: Abstract form showing generativity evolves by adding meta-operator output
+- Second line: Explicit expansion showing all components
+- $\eta_{\text{meta}}$: Meta-learning rate (controls how aggressively to rewrite objectives; much smaller than regular $\eta$ for stability)
+- The full expansion shows: new generativity = old generativity + (meta-rate) × (sum of all activated modification modes)
+- Each mode activates via $\sigma(\langle w_k, \Delta_t \rangle - b_k)$ (pattern detector) and contributes $\varphi_k$ (modification) scaled by $\tau_k$ (time constant)
 
 ---
 
@@ -327,11 +421,24 @@ where:
 - **Input**: Contradiction vector $\Delta_t$, rule set $\mathcal{R}_t$, parameters $\theta_t$
 - **Output**: Updated rules $\mathcal{R}_{t+1}$, correction term $\Psi_t$, new coherence functions $C_t^{\text{new}}$
 
+**What This Operator Does:**
+- Takes current contradictions, rules, and parameters as input
+- Produces three outputs:
+  1. $\mathcal{R}_{t+1}$: Revised rule set (may add new rules, remove obsolete ones, or modify existing)
+  2. $\Psi_t$: Immediate correction to apply to parameters (bandaid fix while rules update)
+  3. $C_t^{\text{new}}$: New coherence functions to track (expanded monitoring)
+
 ### B.2 Three-Stage Processing
 
 #### Stage 1: Contradiction Classification
 $$\text{class}(\Delta_t) = \arg\max_c \langle v_c, \text{normalize}(\Delta_t) \rangle$$
 where $v_c$ are contradiction prototype vectors (learned or predefined).
+
+**Formula Explanation:**
+- $\text{normalize}(\Delta_t) = \frac{\Delta_t}{|\Delta_t|}$: Convert contradiction vector to unit length (direction only, not magnitude)
+- $\langle v_c, \text{normalize}(\Delta_t) \rangle$: Inner product measures similarity between current contradiction pattern and prototype $c$
+- $\arg\max_c$: Return the class $c$ with highest similarity
+- Result: Classify contradiction into one of predefined types (A, B, or C below)
 
 **Contradiction Types**:
 - **Type A (Logical)**: Cyclic dependencies, inconsistent derivations
@@ -340,6 +447,14 @@ where $v_c$ are contradiction prototype vectors (learned or predefined).
 
 #### Stage 2: Rule Revision
 $$\mathcal{R}_{t+1} = \mathcal{R}_t \cup \{r_{\text{new}}\} \setminus \{r_{\text{obsolete}}\}$$
+
+**Set Notation Explained:**
+- $\mathcal{R}_t$: Current rule set
+- $\cup$: Union (add elements)
+- $\{r_{\text{new}}\}$: Set containing the new rule
+- $\setminus$: Set difference (remove elements)
+- $\{r_{\text{obsolete}}\}$: Set of rules to remove
+- Combined: Start with $\mathcal{R}_t$, add $r_{\text{new}}$, remove $r_{\text{obsolete}}$, resulting in $\mathcal{R}_{t+1}$
 
 **Revision Mechanisms by Type**:
 
